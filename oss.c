@@ -42,25 +42,30 @@ int main(int argc, char ** argv){
 					continueProcess = 0;
 					break;
 				 case 'n'://-n arg => number of total children to launch
-				 	if(isNotDigit(optarg) == 0)
+				 	if(isNotDigit(optarg) == 0){
 						printArgNotNumMessage(opt);
 						continueProcess = 0;
-						return EXIT_FAILURE;
-					proc = atoi(optarg);
+					}else{
+						proc = atoi(optarg);
+					}
 					break;
 				 case 's'://-s arg => how many children to allow to run simultaneously
-				 	if(isNotDigit(optarg) == 0)
+				 	if(isNotDigit(optarg) == 0){
 						printArgNotNumMessage(opt);
 						continueProcess = 0;
 						return EXIT_FAILURE;
-					simul = atoi(optarg);
+					}else{
+						simul = atoi(optarg);
+					}
 					break;
 				 case 't'://-t arg => number to pass to the worker process
-				 	if(isNotDigit(optarg) == 0)
+				 	if(isNotDigit(optarg) == 0){
 						printArgNotNumMessage(opt);
 						continueProcess = 0;
 						return EXIT_FAILURE;
-					iter = atoi(optarg);
+					}else{
+						iter = atoi(optarg);
+					}
 					break;
 			}
 		}
