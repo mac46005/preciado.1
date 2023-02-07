@@ -18,6 +18,7 @@ void exitMessage();
 void printHelp();
 int isNotDigit(char * optarg);
 void printArgNotNumMessage(char opt);
+pid_t call(char* argv[]);
 /////////////////////////////////////////
 
 
@@ -30,7 +31,7 @@ int main(int argc, char ** argv){
 	char opt;
 	int proc = 1;//number of total children to launch
 	int simul = 1;//how many children to allow to run simultaneously
-	int iter = 1;//number to pass to the worker process
+	char* iter;//number to pass to the worker process
 	int continueProcess = 1;//false if user does not provide valid arguments to options
 	if(argc <= 1){
 		printHelp();
@@ -55,7 +56,6 @@ int main(int argc, char ** argv){
 				 	if(isNotDigit(optarg) == 0){
 						printArgNotNumMessage(opt);
 						continueProcess = 0;
-						return EXIT_FAILURE;
 					}else{
 						simul = atoi(optarg);
 					}
@@ -64,29 +64,22 @@ int main(int argc, char ** argv){
 				 	if(isNotDigit(optarg) == 0){
 						printArgNotNumMessage(opt);
 						continueProcess = 0;
-						return EXIT_FAILURE;
 					}else{
-						iter = atoi(optarg);
+						iter = optarg;
 					}
 					break;
 			}
 		}
 		if(continueProcess == 1){
-			printf("proc: %d\n", proc);
-			printf("simul %d\n", simul);
-			printf("iter: %d\n", iter);
-			pid_t pid = fork();
-			if(pid == 0){
-				char* args[] = {"./worker", "2", 0};
-				char* envp[] = { NULL };
-				execve("./worker", args,envp);
-				perror("\nCould not execve\n");
-				return 1;
-			}
-			else{
-				printf("\nfrom oss\n");
-			}
+			char* arguments[] = {"./worker", iter, 0};
+			int i;
+			for(i = 0; i < proc; i++){
 			
+				if(call(arguments) != 0){
+					printf("from parent\n");
+					wait(0);
+				}
+			}
 			exitMessage();
 			return EXIT_SUCCESS;
 		}
@@ -103,7 +96,7 @@ void border(){
 ////////////////////////////////////////
 //Common Console Messages///////////////
 void exitMessage(){
-	printf("Exiting Program!");
+	printf("Exiting Program!\n");
 }
 
 void printArgNotNumMessage(char opt){
@@ -134,6 +127,16 @@ int isNotDigit(char * optarg){
 }
 
 
-
+pid_t call(char * argv[]){
+	pid_t pid = fork();
+	if(pid == 0){
+		char* envp[] = {NULL};
+		execve(argv[0], argv,envp);
+		perror("Could not execve\n");
+		exit(1);
+	}else{
+		return pid;
+	}
+}
 
 //END OF FILE
