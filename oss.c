@@ -23,7 +23,9 @@ void printArgNotNumMessage(char opt);
 
 
 
+
 int main(int argc, char ** argv){
+	
 	const char optstr[] = "hn:s:t:";
 	char opt;
 	int proc = 1;//number of total children to launch
@@ -73,6 +75,18 @@ int main(int argc, char ** argv){
 			printf("proc: %d\n", proc);
 			printf("simul %d\n", simul);
 			printf("iter: %d\n", iter);
+			pid_t pid = fork();
+			if(pid == 0){
+				char* args[] = {"./worker", "2", 0};
+				char* envp[] = { NULL };
+				execve("./worker", args,envp);
+				perror("\nCould not execve\n");
+				return 1;
+			}
+			else{
+				printf("\nfrom oss\n");
+			}
+			
 			exitMessage();
 			return EXIT_SUCCESS;
 		}
@@ -109,8 +123,6 @@ void printHelp(){
 	border();
 }
 //////////////////////////////////////////
-
-
 
 
 int isNotDigit(char * optarg){
