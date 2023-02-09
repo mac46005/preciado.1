@@ -30,15 +30,23 @@ int main(int argc, char ** argv){
 	const char optstr[] = "hn:s:t:";
 	char opt;
 	int proc = 1;//number of total children to launch
-	int simul = 1;//how many children to allow to run simultaneously
+	int s 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imul = 1;//how many children to allow to run simultaneously
 	char* iter;//number to pass to the worker process
 	int continueProcess = 1;//false if user does not provide valid arguments to options
+
+
+
+	//Check for arguments given
+	//If no arguments given stop
 	if(argc <= 1){
 		printHelp();
 		exitMessage();
 		return EXIT_FAILURE;
-	}else{
+	}//ELSE continue process
+	else{
+		//Get options user provided
 		while((opt = getopt(argc, argv, optstr)) != -1){
+			//With given options and argurments set values for proc, simul, iter
 			switch(opt){
 			 	case 'h'://-h => help
 			 		printHelp();
@@ -69,9 +77,9 @@ int main(int argc, char ** argv){
 					}
 					break;
 			}
-		}
+		}//This checks if all options have been given valid argurments before continuing the instantiation of workers
 		if(continueProcess == 1){
-			char* arguments[] = {"./worker", iter, 0};
+			arguments[] = {"./worker", iter, 0};
 			int i;
 			for(i = 0; i < proc; i++){
 			
@@ -82,13 +90,19 @@ int main(int argc, char ** argv){
 			}
 			exitMessage();
 			return EXIT_SUCCESS;
-		}
+		}//If an argurment is not valid stop process and exit program
 		else{
 			exitMessage();
 			return EXIT_FAILURE;
 		}
 	}
 }
+// End main()
+
+
+
+
+
 //Console format///////////////////////
 void border(){
 	printf("-----------------------------------------------------\n");

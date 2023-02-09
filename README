@@ -1,0 +1,17 @@
+Project 1
+AUTHOR: Marco Preciado
+
+
+
+DESCRIPTION:
+This project will provide some insight about how multi-processes are created and the behavior.
+The project include two .c files: oss.c, worker.c. worker.c will be given one argument. The argument is
+will determine the amount of loops the worker c will produce. During the loop a statement will be printed
+with the following information: pid, parent pid, iteration count. oss.c is responsible for the creation of
+the worker. oss.c will have many options that a user can supply. An option is the amount of workers to create.
+Another is how many loops workers will produce. Finally, how many workers will run simultaneously.
+
+
+
+LOGS:
+2-8-2022 8:07pm I am in the process of creating loops for the instantiation of multple workers
