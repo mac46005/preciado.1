@@ -11,6 +11,18 @@ with the following information: pid, parent pid, iteration count. oss.c is respo
 the worker. oss.c will have many options that a user can supply. An option is the amount of workers to create.
 Another is how many loops workers will produce. Finally, how many workers will run simultaneously.
 
+USAGE:
+The user will provide an option to and an argurment to provide to program oss.
+Here are the options:
+-n argument, where argument is the total workers to launch
+-s argument, where argument is the number passed to worker to process
+-t argument, where argument is the number of children run simultaneously
+
+The user must provide atleast 1 option. By default all options start with one.
+For example if a user wants to run 10 workers and make each worker loop 4 times with 5 workers running simultaneously it will be...
+
+./oss -n 10 -s 5 -t 4
+
 
 
 LOGS:
