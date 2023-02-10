@@ -30,7 +30,7 @@ int main(int argc, char ** argv){
 	const char optstr[] = "hn:s:t:";
 	char opt;
 	int proc = 1;//number of total children to launch
-	int s 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imul = 1;//how many children to allow to run simultaneously
+	int simul = 1;//how many children to allow to run simultaneously
 	char* iter;//number to pass to the worker process
 	int continueProcess = 1;//false if user does not provide valid arguments to options
 
@@ -79,7 +79,7 @@ int main(int argc, char ** argv){
 			}
 		}//This checks if all options have been given valid argurments before continuing the instantiation of workers
 		if(continueProcess == 1){
-			arguments[] = {"./worker", iter, 0};
+			char * arguments[] = {"./worker", iter, 0};
 			int i;
 			for(i = 0; i < proc; i++){
 			
