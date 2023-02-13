@@ -112,29 +112,21 @@ int main(int argc, char* argv[]){
 
 
 			int i;
-			for(i = 0; i <= simul; i++){
-				proc--;
-				fork();
-				execv(progName, arguments);
-			}
-
-
-
-
-			wait(NULL);
-
-
-
-
-
 			for(i = 0; i <= proc; i++){
+				simul--;
 				int pid = fork();
 				if(pid == 0){
 					execv(progName, arguments);
 				}else{
-					wait(NULL);
+					if(simul == 0){
+						wait(NULL);
+					}
 				}
 			}
+
+
+
+
 			//END FORKING
 
 		}else{//exits if arguments given invalid
