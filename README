@@ -34,3 +34,4 @@ LOGS:
 However, I understand that when a user asks for n number of children I must calculate somehow the number of processes to call for and execute programs.
 I am having trouble understanding how I can get information of parent child PID's. I know that when a fork is called child is 0 but child and child and child of parent will also have unique process id.
 I want to somehow get this information while creating a process.
+2-12-2023 10:07pm All seems to be working as needed. Would like feedback. Overall I do have a better understanding of what fork does.
