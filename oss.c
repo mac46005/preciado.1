@@ -7,19 +7,37 @@
 //-t takes an argument that indicates the number that is passed to worker for processing
 //-s takes an argument that indicates the number of workers that process synchronously
 
+
+
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
 #include <ctype.h>
+
+
+
+
+
+
+
+
 void printHelp();
 void exitMessage();
 int isNotDigit(char* optarg);
 			
 
 
+
+
+
+//START MAIN
 int main(int argc, char* argv[]){
+
+
 	const char optstr[] = "hn:s:t:";
 	char opt;
 	int proc = 1;//number of total children to launch
@@ -27,12 +45,22 @@ int main(int argc, char* argv[]){
 	char* iter;//number to pass to the worker process
 	int continueProcess = 1;//false if user does not provide valid arguments to options
 
+
+
+
+
 	if(argc <= 1){
 		printHelp();
 		exitMessage();
 		return 1;
 	}
 	else{
+
+
+
+
+
+		//START getopt OPTION PROCESSING
 		while((opt = getopt(argc, argv, optstr)) != -1){
 			switch(opt){
 				case 'h':
@@ -66,6 +94,7 @@ int main(int argc, char* argv[]){
 
 			}
 		}
+		//END getopt OPTION PROCESSING
 
 
 
@@ -74,41 +103,62 @@ int main(int argc, char* argv[]){
 
 
 
+		if(continueProcess == 1){//Checks if given arguments can be used for the manipulation of worker processes
 
-		if(continueProcess == 1){
-			// This is where the forking happens
+			//START FORKING
 			char* progName = "./worker";
 			char* arguments[] = {progName, iter, NULL};
 
-			int pid = fork();
-			if(pid == 0){
+
+
+			int i;
+			for(i = 0; i <= simul; i++){
+				proc--;
+				fork();
 				execv(progName, arguments);
-				exit(0);
 			}
-			else{
-				wait(NULL);
-				printf("parent waited\n");
+
+
+
+
+			wait(NULL);
+
+
+
+
+
+			for(i = 0; i <= proc; i++){
+				int pid = fork();
+				if(pid == 0){
+					execv(progName, arguments);
+				}else{
+					wait(NULL);
+				}
 			}
-				
-			
-		}else{
+			//END FORKING
+
+		}else{//exits if arguments given invalid
 			exitMessage();
 			return 2;
 		}
 
-
-
-
-
-
-
-
-
-
-
 	}
 	return 0;
+
+
+
+
 }
+// END main
+
+
+
+
+
+
+
+
+
 
 void printHelp(){
 	char helpMessage[] = 
@@ -116,7 +166,7 @@ void printHelp(){
 	printf(helpMessage);
 }
 void exitMessage(){
-	char goodbye[] = "Thank you for using me. Good bye\n";
+	char goodbye[] = "oss is exiting. Good bye\n";
 	printf(goodbye);
 }
 
@@ -125,7 +175,7 @@ int isNotDigit(char* optarg){
 		return 1;
 	}
 	else{
-		printf("Please enter a digit for all arguments\n");
+		printf("ERROR:Please enter a digit for all arguments\n");
 		return 0;
 	}
 }
