@@ -27,4 +27,10 @@ For example if a user wants to run 10 workers and make each worker loop 4 times 
 
 LOGS:
 2-8-2023 8:07pm I am in the process of creating loops for the instantiation of multple workers
+
 2-9-2023 8:30pm Setting up MAKEFILE
+
+2-12-2023 7:36pm Must complete this project by today. I understand that fork will create process by process^2 each time fork is called.
+However, I understand that when a user asks for n number of children I must calculate somehow the number of processes to call for and execute programs.
+I am having trouble understanding how I can get information of parent child PID's. I know that when a fork is called child is 0 but child and child and child of parent will also have unique process id.
+I want to somehow get this information while creating a process.

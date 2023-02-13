@@ -12,4 +12,5 @@ int main(int argc, char ** argv){
 		printf("PPID: %d ", getppid());
 		printf("Iteration: %d\n", i + 1);
 	}
+	return 0;
 }

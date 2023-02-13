@@ -1,156 +1,133 @@
 //AUTHOR: Marco Preciado
-//Description:This program will call the 'worker' program to conduct some operation
-//The user will have 3 options:-n arg,-s arg,-t arg
-//-n arg, takes an integer that creates total children('worker') programs to launch
-//-s arg, takes an integer that indicates how many children will be allowed to run simultaneously
-//-t arg, is the integer passed to the child('worker') for processing
+//DESCRIPTION:
+//This program will call the 'worker' program to conduct some operation
+//The user will have 4 options:-h,-n,-t,-s
+//-h is the option for help and will tell users how to use this program
+//-n takes an argument that indicates how many children will be created
+//-t takes an argument that indicates the number that is passed to worker for processing
+//-s takes an argument that indicates the number of workers that process synchronously
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <errno.h>
 #include <string.h>
-#include <linux/limits.h>
 #include <ctype.h>
-
-
-//interfaces////////////////////////////
-void border();
-void exitMessage();
 void printHelp();
-int isNotDigit(char * optarg);
-void printArgNotNumMessage(char opt);
-pid_t call(char* argv[]);
-/////////////////////////////////////////
+void exitMessage();
+int isNotDigit(char* optarg);
+			
 
 
-
-
-
-int main(int argc, char ** argv){
-	
+int main(int argc, char* argv[]){
 	const char optstr[] = "hn:s:t:";
 	char opt;
 	int proc = 1;//number of total children to launch
-	int simul = 1;//how many children to allow to run simultaneously
+	int simul = 0;//how many children to allow simultaneous process
 	char* iter;//number to pass to the worker process
 	int continueProcess = 1;//false if user does not provide valid arguments to options
 
-
-
-	//Check for arguments given
-	//If no arguments given stop
 	if(argc <= 1){
 		printHelp();
 		exitMessage();
-		return EXIT_FAILURE;
-	}//ELSE continue process
+		return 1;
+	}
 	else{
-		//Get options user provided
 		while((opt = getopt(argc, argv, optstr)) != -1){
-			//With given options and argurments set values for proc, simul, iter
 			switch(opt){
-			 	case 'h'://-h => help
-			 		printHelp();
+				case 'h':
+					printHelp();
 					continueProcess = 0;
 					break;
-				 case 'n'://-n arg => number of total children to launch
-				 	if(isNotDigit(optarg) == 0){
-						printArgNotNumMessage(opt);
+				case 'n':
+					if(isNotDigit(optarg) == 0){
 						continueProcess = 0;
+						
 					}else{
 						proc = atoi(optarg);
 					}
 					break;
-				 case 's'://-s arg => how many children to allow to run simultaneously
-				 	if(isNotDigit(optarg) == 0){
-						printArgNotNumMessage(opt);
+				case 's':
+					if(isNotDigit(optarg) == 0){
 						continueProcess = 0;
 					}else{
 						simul = atoi(optarg);
 					}
 					break;
-				 case 't'://-t arg => number to pass to the worker process
-				 	if(isNotDigit(optarg) == 0){
-						printArgNotNumMessage(opt);
+				case 't':
+					if(isNotDigit(optarg) == 0){
 						continueProcess = 0;
 					}else{
 						iter = optarg;
 					}
 					break;
+				default:
+					break;
+
 			}
-		}//This checks if all options have been given valid argurments before continuing the instantiation of workers
-		if(continueProcess == 1){
-			char * arguments[] = {"./worker", iter, 0};
-			int i;
-			for(i = 0; i < proc; i++){
-			
-				if(call(arguments) != 0){
-					printf("from parent\n");
-					wait(0);
-				}
-			}
-			exitMessage();
-			return EXIT_SUCCESS;
-		}//If an argurment is not valid stop process and exit program
-		else{
-			exitMessage();
-			return EXIT_FAILURE;
 		}
+
+
+
+
+
+
+
+
+
+		if(continueProcess == 1){
+			// This is where the forking happens
+			char* progName = "./worker";
+			char* arguments[] = {progName, iter, NULL};
+
+			int pid = fork();
+			if(pid == 0){
+				execv(progName, arguments);
+				exit(0);
+			}
+			else{
+				wait(NULL);
+				printf("parent waited\n");
+			}
+				
+			
+		}else{
+			exitMessage();
+			return 2;
+		}
+
+
+
+
+
+
+
+
+
+
+
 	}
-}
-// End main()
-
-
-
-
-
-//Console format///////////////////////
-void border(){
-	printf("-----------------------------------------------------\n");
-}
-////////////////////////////////////////
-//Common Console Messages///////////////
-void exitMessage(){
-	printf("Exiting Program!\n");
-}
-
-void printArgNotNumMessage(char opt){
-	printf("-%s was not given an integer!\n", opt);
+	return 0;
 }
 
 void printHelp(){
-	border();
-	printf("Welcome to the worker process simulator!\n\n");
-	printf("AUTHOR: Marco Preciado\n");
-	printf("DESCRIPTION: the purpose of this program is to simulate how child programs process either simultaneosly and/or sequentially\n\n");
-	printf("INSTRUCTIONS:Please provide an integer to each option provided\n");
-	printf("OPTIONS: -n arg, -s arg, -t arg\n");
-	printf("-n arg, where arg is the number of total children to launch\n");
-	printf("-s arg, where arg is the number of children allowed to run simultaneously\n");
-	printf("-t arg, where arg is the number passed to the worker for the number of iterations a worker performs\n");
-	border();
+	char helpMessage[] = 
+		"Welcome to the worker process simulator!\nAUTHOR: Marco Preciado\n\nDESCRIPTION:\nThe purpose of this program is to simulate how child programs process either simultaneously and sequentially\n\nINSTRUCTIONS: Please provide and integer value to each of the following options\nOPTIONS: -n, -t, -s\n-n arg, where arg is the number of child processes created\n-t arg, where arg is the number passes to child processes for processing\n-s arg, where arg is the number of child processes that work simultaneously\n\nEXAMPLE: ./oss -n 3 -s 4 -t 40\n The example is an example use of this program that will create 3 workers of which 4 of them will work simultaneously and all workers will process the number 40.\n";
+	printf(helpMessage);
 }
-//////////////////////////////////////////
+void exitMessage(){
+	char goodbye[] = "Thank you for using me. Good bye\n";
+	printf(goodbye);
+}
 
-
-int isNotDigit(char * optarg){
-	if(isdigit(optarg[0]))
+int isNotDigit(char* optarg){
+	if(isdigit(optarg[0])){
 		return 1;
-	else
-		printf("Please enter a digit for all arguments!\n");
+	}
+	else{
+		printf("Please enter a digit for all arguments\n");
 		return 0;
-}
-
-
-pid_t call(char * argv[]){
-	pid_t pid = fork();
-	if(pid == 0){
-		char* envp[] = {NULL};
-		execve(argv[0], argv,envp);
-		perror("Could not execve\n");
-		exit(1);
-	}else{
-		return pid;
 	}
 }
 
-//END OF FILE
+
