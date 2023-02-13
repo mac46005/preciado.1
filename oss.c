@@ -112,7 +112,7 @@ int main(int argc, char* argv[]){
 
 
 			int i;
-			for(i = 0; i <= proc; i++){
+			for(i = 0; i < proc; i++){
 				simul--;
 				int pid = fork();
 				if(pid == 0){

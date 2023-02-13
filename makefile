@@ -3,7 +3,7 @@ CFLAGS = -g3
 TARGET1 = worker
 TARGET2 = oss
 
-OBJS2 = worker.o
+OBJS1 = worker.o
 OBJS2 = oss.o
 
 all: $(TARGET1) $(TARGET2)
